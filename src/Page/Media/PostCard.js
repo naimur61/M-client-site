@@ -10,7 +10,7 @@ import { id } from 'date-fns/locale';
 
 
 const PostCard = ({ post }) => {
-   const { date, img, _id } = post;
+   const { date, img, _id, reaction } = post;
    const postTime = format(new Date(date), "PP");
    const monthNames = ["January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
@@ -20,12 +20,30 @@ const PostCard = ({ post }) => {
    const [like, setLike] = useState(false);
 
    const handleLike = () => {
-      setLike(!like);
+      let react = '';
+      if (reaction === undefined || reaction === 0) {
+         react = 1;
+      }
+      else if (like === false) {
+         react = (+reaction) + 1;
+      }
+      else {
+         react = (+reaction) - 1;
+      }
+
       fetch(`http://localhost:5000/postLike/${_id}`, {
          method: 'PUT',
+         headers: {
+            'content-type': 'application/json'
+         },
+         body: JSON.stringify({ react })
       })
          .then(res => res.json())
-         .then(data => console.log(data))
+         .then(data => {
+            if (data.acknowledged === true) {
+               setLike(!like);
+            }
+         })
    };
 
    const [comments, setComments] = useState(false);
@@ -70,7 +88,7 @@ const PostCard = ({ post }) => {
                {/* Footer  */}
                <div className='px-3 m-3'>
                   <div className='flex justify-between mb-2'>
-                     <p className='cursor-pointer hover:underline '>100 people</p>
+                     <p className='cursor-pointer hover:underline '>{reaction ? reaction : '0'} people</p>
                      <p onClick={handleComments} className='cursor-pointer hover:underline '>10 comments</p>
                   </div>
                   <hr />

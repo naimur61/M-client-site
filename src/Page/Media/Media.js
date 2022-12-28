@@ -11,7 +11,7 @@ const Media = () => {
          return data;
       }
    });
-   // refetch();
+   refetch();
    return (
       <div className=' my-10 px-5'>
          {/* Post Card  */}
