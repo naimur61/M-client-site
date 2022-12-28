@@ -11,7 +11,7 @@ import { id } from 'date-fns/locale';
 
 const PostCard = ({ post }) => {
    const { date, img, _id, reaction } = post;
-   const postTime = format(new Date(date), "PP");
+   // const postTime = format(new Date(date), "PP");
    const monthNames = ["January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
    ];
