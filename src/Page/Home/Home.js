@@ -70,7 +70,7 @@ const Home = () => {
                   {errors.image && <span className='text-red-700 font-semibold block'>This field is required</span>}
                </label>
 
-               <div className='w-fit mx-auto mt-8'><input type="submit" className='btn btn-sm' /></div>
+               <div className='w-fit mx-auto mt-8'><button type="submit" className='btn btn-sm'>Post</button></div>
             </form>
          </div>
       </div>
