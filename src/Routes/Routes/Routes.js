@@ -4,6 +4,7 @@ import About from '../../Page/About/About';
 import Home from '../../Page/Home/Home';
 import Media from '../../Page/Media/Media';
 import Message from '../../Page/Message/Message';
+import Details from '../../Page/Shared/Details/Details';
 
 
 
@@ -17,6 +18,8 @@ export const Routes = createBrowserRouter([
          { path: '/media', element: <Media /> },
          { path: '/message', element: <Message /> },
          { path: '/about', element: <About /> },
+         { path: '/details/:id', element: <Details />, loader: ({ params }) => fetch(`http://localhost:5000/posts/${params.id}`) },
+
 
       ]
    },

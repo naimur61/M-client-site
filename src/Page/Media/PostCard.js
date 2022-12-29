@@ -6,6 +6,7 @@ import { RiShareForwardLine, RiMore2Fill } from 'react-icons/ri';
 import { format } from "date-fns";
 import Comments from './Comments';
 import { id } from 'date-fns/locale';
+import { Link } from 'react-router-dom';
 
 
 
@@ -101,10 +102,10 @@ const PostCard = ({ post }) => {
                         < FaRegCommentAlt />
                         <strong>Comment</strong>
                      </div>
-                     <div className='flex items-center gap-2 cursor-pointer'>
+                     <Link to={`/details/${_id}`} className='flex items-center gap-2 cursor-pointer '>
                         < RiShareForwardLine className='  text-2xl' />
                         <strong>Details</strong>
-                     </div>
+                     </Link>
                   </div>
                   {commentsBtn &&
                      <Comments comments={comments} _id={_id} />
