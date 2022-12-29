@@ -30,7 +30,7 @@ const Details = () => {
          react = (+reaction) - 1;
       }
 
-      fetch(`http://localhost:5000/postLike/${_id}`, {
+      fetch(`https://m-server-pi.vercel.app/postLike/${_id}`, {
          method: 'PUT',
          headers: {
             'content-type': 'application/json'

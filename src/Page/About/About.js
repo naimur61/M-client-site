@@ -1,24 +1,29 @@
-import { async } from '@firebase/util';
 import React from 'react';
 import { useQuery } from 'react-query';
 import { useAuth } from '../../Hooks/Auth/useAuth';
 import edit from '../../assets/icon/user.png'
 import Modal from './Modal';
+import { ScaleLoader } from 'react-spinners';
+
 
 const About = () => {
 
    const { user } = useAuth();
 
-   const { data: users = [], refetch } = useQuery({
+   const { data: users = [], refetch, isLoading } = useQuery({
       queryKey: "user",
       queryFn: async () => {
-         const res = await fetch(`http://localhost:5000/users/?email=${user?.email}`);
+         const res = await fetch(`https://m-server-pi.vercel.app/users/?email=${user?.email}`);
          const data = await res.json();
          return data;
       }
    })
-   const { university, address } = users;
+   const { university, address, _id } = users;
    refetch();
+
+   if (isLoading) {
+      return <div className=' h-screen flex justify-center items-center'><ScaleLoader color="#36d7b7" className='text-5xl' /></div>;
+   }
 
    return (
       <div className='flex md:justify-between flex-col md:flex-row px-2 md:px-0 gap-5 my-20 h-screen'>
@@ -34,7 +39,7 @@ const About = () => {
          </div>
 
          {/* Put this part before </body> tag */}
-         <Modal user={user} address={address} university={university} />
+         <Modal user={user} address={address} university={university} id={_id} />
       </div>
    );
 };

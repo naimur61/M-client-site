@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
+import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../Hooks/Auth/useAuth';
 
@@ -7,10 +8,14 @@ import { useAuth } from '../../Hooks/Auth/useAuth';
 const Comments = ({ comments, _id }) => {
    const { register, handleSubmit, reset } = useForm();
    const { user } = useAuth();
+   const navigate = useNavigate();
    let newObj = comments;
 
 
    const onSubmit = data => {
+      if (!(user || user?.uid)) {
+         return navigate('/login');
+      }
       const obj = {
          commentTxt: data?.comment,
          displayName: user?.displayName,
@@ -23,7 +28,7 @@ const Comments = ({ comments, _id }) => {
          newObj.push(obj)
       }
 
-      fetch(`http://localhost:5000/postComments/${_id}`, {
+      fetch(`https://m-server-pi.vercel.app/postComments/${_id}`, {
          method: 'PUT',
          headers: {
             'content-type': 'application/json'

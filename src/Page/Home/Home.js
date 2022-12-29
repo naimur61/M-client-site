@@ -1,7 +1,10 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
-import { useNavigate } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Hooks/Auth/useAuth';
+import { ScaleLoader } from 'react-spinners';
+import PostCard from '../Media/PostCard';
 
 
 
@@ -9,12 +12,12 @@ const Home = () => {
    const imageHostKey = process.env.REACT_APP_imgbb_key;
    const navigate = useNavigate();
    const { user } = useAuth();
-
-
-
    const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
    const onSubmit = data => {
+      if (!(user || user?.uid)) {
+         return navigate('/login');
+      }
       const image = data.image[0];
       const formData = new FormData();
       formData.append('image', image);
@@ -34,7 +37,7 @@ const Home = () => {
                   email: user?.email,
                   date: new Date(),
                };
-               fetch('http://localhost:5000/posts', {
+               fetch('https://m-server-pi.vercel.app/posts', {
                   method: 'POST',
                   headers: {
                      'content-type': 'application/json'
@@ -53,13 +56,25 @@ const Home = () => {
          });
 
    };
+
+
+   const { data: topPosts = [], isLoading, refetch } = useQuery({
+      queryKey: 'topPost',
+      queryFn: async () => {
+         const res = await fetch('https://m-server-pi.vercel.app/topPosts');
+         const data = await res.json();
+         return data;
+      }
+   })
+
+   refetch();
+
+   if (isLoading) {
+      return <div className='h-screen flex justify-center items-center'><ScaleLoader color="#36d7b7" className='text-5xl' /></div>;
+   }
+
    return (
       <div>
-
-         {/* Top section  */}
-         <div className='text-center mt-20'>
-            top post
-         </div>
 
          {/* Text field  */}
          <div className=' shadow-lg border p-10 rounded-md my-20 flex flex-col items-center'>
@@ -80,6 +95,17 @@ const Home = () => {
                <div className='w-fit mx-auto mt-8'><button type="submit" className='btn btn-sm'>Post</button></div>
             </form>
          </div>
+
+
+
+
+         {/* Top section  */}
+         <div className='text-center my-20'>
+            {topPosts.map((post, i) => <PostCard key={i} post={post} />)}
+
+            <Link to='/media' onClick={() => window.scrollTo(0, 0)} className='btn mt-8 btn-sm'>See more</Link>
+         </div>
+
       </div>
    );
 };

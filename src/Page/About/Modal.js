@@ -1,40 +1,28 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-const Modal = ({ user, university, address }) => {
-   const imageHostKey = process.env.REACT_APP_imgbb_key;
+const Modal = ({ user, university, address, id }) => {
    const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
 
-   const onSubmit = (data, e) => {
-      const image = data.image[0];
-      const formData = new FormData();
-      formData.append('image', image);
-      const url = `https://api.imgbb.com/1/upload?key=${imageHostKey}`
-      fetch(url, {
-         method: 'POST',
-         body: formData,
+   const onSubmit = (data) => {
+
+      const userObj = {
+         displayName: data.name,
+         university: data.university,
+         address: data.address,
+         email: data.email
+      };
+      console.log(userObj);
+      fetch(`https://m-server-pi.vercel.app/users/${id}`, {
+         method: 'PUT',
+         headers: {
+            'content-type': 'application/json'
+         },
+         body: JSON.stringify(userObj)
       })
          .then(res => res.json())
-         .then(imgData => {
-            // console.log(imgData.data.url);
-
-            if (imgData) {
-               const userObj = {
-                  displayName: data.name,
-                  photoURL: imgData.data.url,
-                  university: data.university,
-                  address: data.address
-               };
-               fetch('http://localhost:5000/users', {
-                  method: 'POST',
-                  headers: {
-                     'content-type': 'application/json'
-                  },
-                  body: JSON.stringify(userObj)
-               })
-            }
-         })
+         .then(data => console.log(data))
    };
 
 

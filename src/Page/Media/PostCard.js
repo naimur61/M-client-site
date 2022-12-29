@@ -5,7 +5,7 @@ import { RiShareForwardLine, RiMore2Fill } from 'react-icons/ri';
 import { format } from "date-fns";
 import Comments from './Comments';
 import { id } from 'date-fns/locale';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Hooks/Auth/useAuth';
 
 
@@ -17,11 +17,15 @@ const PostCard = ({ post }) => {
    const monthNames = ["January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
    ];
+   const navigate = useNavigate();
 
 
    const [like, setLike] = useState(false);
 
    const handleLike = () => {
+      if (!(user || user?.uid)) {
+         return navigate('/login');
+      }
       let react = '';
       if (reaction === undefined || reaction === 0) {
          react = 1;
@@ -33,7 +37,7 @@ const PostCard = ({ post }) => {
          react = (+reaction) - 1;
       }
 
-      fetch(`http://localhost:5000/postLike/${_id}`, {
+      fetch(`https://m-server-pi.vercel.app/postLike/${_id}`, {
          method: 'PUT',
          headers: {
             'content-type': 'application/json'
@@ -63,9 +67,9 @@ const PostCard = ({ post }) => {
                <div className='px-3 mt-3 flex justify-between items-center'>
 
                   <div className='flex items-stretch gap-3'>
-                     <img src={user?.photoURL} alt="" className='w-10 rounded-full block' />
+                     <img src={post?.photoURL} alt="" className='w-10 rounded-full block' />
                      <div>
-                        <h3 className=' font-bold'> {user?.displayName}</h3>
+                        <h3 className=' font-bold'> {post?.displayName}</h3>
                         <div className='flex gap-2 items-center -mt-2 '>
                            <p className='text-sm font-semibold'>4 h </p>
                            <p className='font-extrabold'>.</p>
@@ -91,7 +95,7 @@ const PostCard = ({ post }) => {
                <div className='px-3 m-3'>
                   <div className='flex justify-between mb-2'>
                      <p className='cursor-pointer hover:underline '>{reaction ? reaction : '0'} people</p>
-                     <p onClick={handleComments} className='cursor-pointer hover:underline '>{comments?.length} comments</p>
+                     <p onClick={handleComments} className='cursor-pointer hover:underline '>{comments ? comments?.length : 0} comments</p>
                   </div>
                   <hr />
                   <div className='flex justify-between m-2'>

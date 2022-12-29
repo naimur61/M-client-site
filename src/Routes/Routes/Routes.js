@@ -7,6 +7,7 @@ import Home from '../../Page/Home/Home';
 import Media from '../../Page/Media/Media';
 import Message from '../../Page/Message/Message';
 import Details from '../../Page/Shared/Details/Details';
+import PrivetRoutes from '../PrivetRoutes/PrivetRoutes';
 
 
 
@@ -19,8 +20,8 @@ export const Routes = createBrowserRouter([
          { path: '/home', element: <Home /> },
          { path: '/media', element: <Media /> },
          { path: '/message', element: <Message /> },
-         { path: '/about', element: <About /> },
-         { path: '/details/:id', element: <Details />, loader: ({ params }) => fetch(`http://localhost:5000/posts/${params.id}`) },
+         { path: '/about', element: <PrivetRoutes><About /></PrivetRoutes> },
+         { path: '/details/:id', element: <PrivetRoutes><Details /></PrivetRoutes>, loader: ({ params }) => fetch(`https://m-server-pi.vercel.app/posts/${params.id}`) },
 
       ]
    },
