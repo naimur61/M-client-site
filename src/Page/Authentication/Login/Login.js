@@ -4,34 +4,27 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../../Hooks/Auth/useAuth';
-import useToken from '../../../Hooks/Token/useToken';
 import '../Login.css'
 
 
 
 
 const Login = () => {
-   const { register, handleSubmit, formState: { errors } } = useForm();
+   const { register, handleSubmit, formState: { errors }, reset } = useForm();
    const { userLogin, popupSignIn, googleProvider, resetPassword } = useAuth();
    const location = useLocation();
    const navigate = useNavigate();
    const from = location.state?.from?.pathname || '/';
    const [userEmail, setUserEmail] = useState('');
-   const [token] = useToken(userEmail);
-   // const [resetEmail, setResetEmail] = useState('')
 
-
-
-   if (token) {
-      navigate(from, { replace: true })
-   }
 
    const onSubmit = (data, e) => {
       userLogin(data.email, data.password)
          .then(result => {
             setUserEmail(data?.email);
             successToast('Login Successful.')
-            e.target.reset();
+            reset();
+            navigate(from, { replace: true })
          })
          .catch(er => {
             errorToast(er.message)
@@ -39,37 +32,13 @@ const Login = () => {
       // console.log(data);
    };
 
-   // send user info database 
-   const saveUser = (name, email) => {
-      const info = {
-         name,
-         email,
-         role: 'Buyer'
-      }
-      fetch('https://bike-one.vercel.app/users', {
-         method: 'POST',
-         headers: {
-            'content-type': 'application/json'
-         },
-         body: JSON.stringify(info)
-      })
-         .then(res => res.json())
-         .then(data => {
-            if (data || !data) {
-               setUserEmail(email)
-               successToast('SignUp successfully.')
-            }
-         })
-   }
-
-
 
    // Google SignIn
    const googleSignIn = () => {
       popupSignIn(googleProvider)
          .then(result => {
             const user = result.user;
-            saveUser(user?.displayName, user?.email);
+            navigate(from, { replace: true })
          })
          .catch(er => errorToast(er.message))
    }
@@ -133,7 +102,7 @@ const Login = () => {
                      <p className='text-blue-700 font-semibold text-xs cursor-pointer'>Forgot Password ?</p>
 
 
-                     <input type="submit" className="btn btn-info font-bold font-serif text-white hover:bg-cyan-600 block  my-3 w-full" />
+                     <button type="submit" className="btn btn-info font-bold font-serif text-white hover:bg-cyan-600 block  my-3 w-full">Login</button>
                      <small className='text-center block'><Link to='/signup' className='text-info font-semibold'>Create Account ?</Link></small>
                      <div className="divider">OR</div>
 

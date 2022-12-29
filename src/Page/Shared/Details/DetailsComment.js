@@ -45,7 +45,7 @@ const DetailsComment = ({ comments, _id }) => {
 
          {comments &&
             comments.map((cm, i) => <div key={i} className='mt-5 grid grid-cols-12 items-start px-7 justify-between'>
-               <img src={user?.photoURL} alt="" className='w-8 rounded-full block mt-1 col-span-2' />
+               <img src={user?.photoURL} alt="" className='w-8 h-8 rounded-full block mt-1 col-span-2' />
                <div className="border px-5 py-2 rounded-3xl w-fit block col-span-10" >
                   <h3 className='font-bold text-md'>{cm?.displayName}</h3>
                   <p className='text-sm'>{cm?.commentTxt}</p>

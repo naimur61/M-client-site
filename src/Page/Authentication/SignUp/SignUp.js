@@ -5,7 +5,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../../Hooks/Auth/useAuth';
 import { GoArrowSmallLeft } from 'react-icons/go';
 import { useState } from "react";
-import useToken from "../../../Hooks/Token/useToken";
 
 
 
@@ -13,17 +12,12 @@ import useToken from "../../../Hooks/Token/useToken";
 const SignUp = () => {
    const imageHostKey = process.env.REACT_APP_imgbb_key;
    const { createAccountByEmail, updateUserProfile } = useAuth();
-   const { register, handleSubmit, formState: { errors } } = useForm();
+   const { register, handleSubmit, formState: { errors }, reset } = useForm();
    const navigate = useNavigate();
    const location = useLocation();
    const from = location.state?.from?.pathname || '/';
    const [userEmail, setUserEmail] = useState('');
-   const [token] = useToken(userEmail);
 
-
-   if (token) {
-      navigate(from, { replace: true })
-   }
 
 
 
@@ -43,20 +37,28 @@ const SignUp = () => {
             if (imgData) {
                const userObj = {
                   displayName: data.name,
-                  photoURL: imgData.data.url
+                  photoURL: imgData.data.url,
+                  university: data.university,
+                  address: data.address,
+                  email: data.email
                };
 
                createAccountByEmail(data.email, data.password)
                   .then(result => {
                      const user = result.user;
-
                      updateUserProfile(userObj)
                         .then(() => {
                            // saveUser(data.email, data.name)
-                           console.log(user);
-                           saveUser(data.name, data.email, data.role)
-                           e.target.reset();
-
+                           const info = {
+                              displayName: data.name,
+                              photoURL: imgData.data.url,
+                              university: data.university,
+                              address: data.address,
+                              email: data.email
+                           }
+                           saveUser(info)
+                           reset();
+                           navigate(from, { replace: true })
                         })
                         .catch(er => console.log(er))
                   })
@@ -69,24 +71,20 @@ const SignUp = () => {
    };
 
 
-   const saveUser = (name, email, role) => {
-      const info = {
-         name,
-         email,
-         role
-      }
-      // fetch('https://bike-one.vercel.app/users', {
-      //    method: 'POST',
-      //    headers: {
-      //       'content-type': 'application/json'
-      //    },
-      //    body: JSON.stringify(info)
-      // })
-      //    .then(res => res.json())
-      //    .then(data => {
-      //       setUserEmail(email)
-      //       successToast('SignUp successfully.')
-      //    })
+   const saveUser = (info) => {
+
+      fetch('http://localhost:5000/users', {
+         method: 'POST',
+         headers: {
+            'content-type': 'application/json'
+         },
+         body: JSON.stringify(info)
+      })
+         .then(res => res.json())
+         .then(data => {
+            successToast('SignUp successfully.');
+            navigate(from, { replace: true })
+         })
    }
 
 

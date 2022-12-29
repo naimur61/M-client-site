@@ -35,6 +35,7 @@ const Navbar = () => {
             <Link to='/message' className="btn btn-square btn-ghost btn-sm mr-3">
                < RiMessage2Fill className=' text-2xl' />
             </Link>
+            <Link to='/about' className="btn btn-square btn-ghost btn-sm mr-3"><img className='w-5' src={editor_i} alt="" /></Link>
             <>
                {(user || user?.uid) ?
                   <div className="dropdown dropdown-end mr-3">
@@ -50,7 +51,6 @@ const Navbar = () => {
                         </div>
                      </label>
                      <ul tabIndex={0} className="mt-3 p-2  menu menu-compact dropdown-content bg-base-100 shadow-lg rounded-box w-44">
-                        <li><Link to='/about'><img className='w-5' src={editor_i} alt="" />Edit Reviews</Link></li>
                         <li><Link to='/login' onClick={handlerLogout} ><img className='w-5' src={logout_i} alt="" />Logout</Link></li>
                      </ul>
                   </div>

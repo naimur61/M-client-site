@@ -47,7 +47,7 @@ const Details = () => {
 
 
    return (
-      <div className='flex justify-between gap-5 my-10'>
+      <div className='flex justify-between flex-col md:flex-row gap-5 my-10'>
          <div className='w-full'>
             <img src={img} alt="" />
          </div>
