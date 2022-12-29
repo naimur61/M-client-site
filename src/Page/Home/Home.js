@@ -1,12 +1,16 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Hooks/Auth/useAuth';
 
 
 
 const Home = () => {
    const imageHostKey = process.env.REACT_APP_imgbb_key;
    const navigate = useNavigate();
+   const { user } = useAuth();
+
+
 
    const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
@@ -25,6 +29,9 @@ const Home = () => {
                const obj = {
                   content: data.content,
                   img: imgData.data?.url,
+                  displayName: user?.displayName,
+                  photoURL: user?.photoURL,
+                  email: user?.email,
                   date: new Date(),
                };
                fetch('http://localhost:5000/posts', {

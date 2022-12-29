@@ -1,16 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import dp from '../../../assets/icon/look.jpg'
 import { FaGlobeAmericas, FaRegCommentAlt, } from 'react-icons/fa';
 import { SlLike } from 'react-icons/sl';
 import { RiMore2Fill } from 'react-icons/ri';
 import DetailsComment from './DetailsComment';
+import { useAuth } from '../../../Hooks/Auth/useAuth';
 
 
 
 const Details = () => {
+   const { user } = useAuth();
    const post = useLoaderData();
    const { img, content, reaction, comments, _id } = post
+
+
+
+   const [like, setLike] = useState(false);
+
+   const handleLike = () => {
+      let react = '';
+      if (reaction === undefined || reaction === 0) {
+         react = 1;
+      }
+      else if (like === false) {
+         react = (+reaction) + 1;
+      }
+      else {
+         react = (+reaction) - 1;
+      }
+
+      fetch(`http://localhost:5000/postLike/${_id}`, {
+         method: 'PUT',
+         headers: {
+            'content-type': 'application/json'
+         },
+         body: JSON.stringify({ react })
+      })
+         .then(res => res.json())
+         .then(data => {
+            if (data.acknowledged === true) {
+               setLike(!like);
+            }
+         })
+   };
+
+
    return (
       <div className='flex justify-between gap-5 my-10'>
          <div className='w-full'>
@@ -23,9 +58,9 @@ const Details = () => {
             <div className='px-3 mt-3 flex justify-between items-center'>
 
                <div className='flex items-stretch gap-3'>
-                  <img src={dp} alt="" className='w-10 rounded-full block' />
+                  <img src={user?.photoURL} alt="" className='w-10 rounded-full block' />
                   <div>
-                     <h3 className=' font-bold'> Naimur</h3>
+                     <h3 className=' font-bold'> {user?.displayName}</h3>
                      <div className='flex gap-2 items-center -mt-2 '>
                         <p className='text-sm font-semibold'>4 h </p>
                         <p className='font-extrabold'>.</p>
@@ -51,9 +86,9 @@ const Details = () => {
                </div>
                <hr />
                <div className='flex justify-between m-2'>
-                  <div className='flex items-center gap-2 cursor-pointer '>
-                     < SlLike className={` hover:scale-110 'text-blue-600 scale-110`} />
-                     <strong >Like</strong>
+                  <div onClick={handleLike} className='flex items-center gap-2 cursor-pointer '>
+                     < SlLike className={` hover:scale-110 ${like ? 'text-blue-600 scale-110' : undefined} `} />
+                     <strong className={`${like ? 'text-blue-600' : undefined} `} >Like</strong>
                   </div>
                   <div className='flex items-center gap-2 cursor-pointer'>
                      < FaRegCommentAlt />

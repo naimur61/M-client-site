@@ -1,23 +1,27 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
-import dp from '../../assets/icon/look.jpg'
+
+import { useAuth } from '../../Hooks/Auth/useAuth';
 
 
 const Comments = ({ comments, _id }) => {
    const { register, handleSubmit, reset } = useForm();
-   const newObj = comments;
-   const email = 'nafdasld';
-   const displayName = 'Naimur';
+   const { user } = useAuth();
+   let newObj = comments;
 
 
    const onSubmit = data => {
       const obj = {
          commentTxt: data?.comment,
-         displayName,
-         email,
-         dp
+         displayName: user?.displayName,
+         photoURL: user?.photoURL,
+         email: user?.email,
       };
-      newObj.push(obj)
+      if (!comments || (comments === null || undefined)) {
+         newObj = [obj]
+      } else {
+         newObj.push(obj)
+      }
 
       fetch(`http://localhost:5000/postComments/${_id}`, {
          method: 'PUT',
@@ -42,7 +46,7 @@ const Comments = ({ comments, _id }) => {
             <form onSubmit={handleSubmit(onSubmit)} className="w-full">
 
                <div className='mt-3 grid grid-cols-12 items-center px-2 justify-between'>
-                  <img src={dp} alt="" className='w-10 rounded-full block col-span-2 lg:col-span-1' />
+                  <img src={user?.photoURL} alt="" className='w-10 rounded-full block col-span-2 lg:col-span-1' />
                   <input className="input input-bordered rounded-3xl w-full block col-span-10 lg:col-span-11" placeholder="Write a comment..." {...register("comment", { required: true })} />
                </div>
 
@@ -53,13 +57,15 @@ const Comments = ({ comments, _id }) => {
 
          <div>
 
-            <div className='mt-3 grid grid-cols-12 items-start px-7 justify-between'>
-               <img src={dp} alt="" className='w-8 rounded-full block mt-1 col-span-2 lg:col-span-1' />
-               <div className="border px-5 py-2 rounded-3xl w-fit block col-span-10 lg:col-span-11" >
-                  <h3 className='font-bold text-md'>{comments[0]?.displayName}</h3>
-                  <p className='text-sm'>{comments[0]?.commentTxt}</p>
+            {comments &&
+               <div className='mt-3 grid grid-cols-12 items-start px-7 justify-between'>
+                  <img src={user?.photoURL} alt="" className='w-8 rounded-full block mt-1 col-span-2 lg:col-span-1' />
+                  <div className="border px-5 py-2 rounded-3xl w-fit block col-span-10 lg:col-span-11" >
+                     <h3 className='font-bold text-md'>{comments[0]?.displayName}</h3>
+                     <p className='text-sm'>{comments[0]?.commentTxt}</p>
+                  </div>
                </div>
-            </div>
+            }
 
          </div>
 

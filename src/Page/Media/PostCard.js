@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import dp from '../../assets/icon/look.jpg'
 import { FaGlobeAmericas, FaRegCommentAlt, } from 'react-icons/fa';
 import { SlLike } from 'react-icons/sl';
 import { RiShareForwardLine, RiMore2Fill } from 'react-icons/ri';
@@ -7,10 +6,12 @@ import { format } from "date-fns";
 import Comments from './Comments';
 import { id } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../Hooks/Auth/useAuth';
 
 
 
 const PostCard = ({ post }) => {
+   const { user } = useAuth()
    const { date, img, _id, reaction, comments, } = post;
    // const postTime = format(new Date(date), "PP");
    const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -62,9 +63,9 @@ const PostCard = ({ post }) => {
                <div className='px-3 mt-3 flex justify-between items-center'>
 
                   <div className='flex items-stretch gap-3'>
-                     <img src={dp} alt="" className='w-10 rounded-full block' />
+                     <img src={user?.photoURL} alt="" className='w-10 rounded-full block' />
                      <div>
-                        <h3 className=' font-bold'> Naimur</h3>
+                        <h3 className=' font-bold'> {user?.displayName}</h3>
                         <div className='flex gap-2 items-center -mt-2 '>
                            <p className='text-sm font-semibold'>4 h </p>
                            <p className='font-extrabold'>.</p>
