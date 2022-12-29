@@ -10,7 +10,7 @@ import { id } from 'date-fns/locale';
 
 
 const PostCard = ({ post }) => {
-   const { date, img, _id, reaction } = post;
+   const { date, img, _id, reaction, comments, } = post;
    // const postTime = format(new Date(date), "PP");
    const monthNames = ["January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
@@ -46,10 +46,10 @@ const PostCard = ({ post }) => {
          })
    };
 
-   const [comments, setComments] = useState(false);
+   const [commentsBtn, setCommentsBtn] = useState(false);
 
    const handleComments = () => {
-      setComments(!comments);
+      setCommentsBtn(!commentsBtn);
    };
 
    return (
@@ -89,7 +89,7 @@ const PostCard = ({ post }) => {
                <div className='px-3 m-3'>
                   <div className='flex justify-between mb-2'>
                      <p className='cursor-pointer hover:underline '>{reaction ? reaction : '0'} people</p>
-                     <p onClick={handleComments} className='cursor-pointer hover:underline '>10 comments</p>
+                     <p onClick={handleComments} className='cursor-pointer hover:underline '>{comments?.length} comments</p>
                   </div>
                   <hr />
                   <div className='flex justify-between m-2'>
@@ -106,8 +106,8 @@ const PostCard = ({ post }) => {
                         <strong>Details</strong>
                      </div>
                   </div>
-                  {comments &&
-                     <Comments />
+                  {commentsBtn &&
+                     <Comments comments={comments} _id={_id} />
                   }
                </div>
             </div>
